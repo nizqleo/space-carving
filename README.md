@@ -1,12 +1,12 @@
 # space-carving
-a interative space carving algorithm facing articulated objects
+A interative space carving algorithm facing articulated objects
  
  ---
  
 Files:
 
-space-carving.py: main script
+**space-carving.py**: Main script
 
-silhouette_extract.py: include the methods to extract silhouette from rgb images
+**silhouette_extract.py**: Include the methods to extract silhouette from rgb images
 
-projection.py: include the methods to get the camera calibration information
+**projection.py**: Include the methods to get the camera calibration information
