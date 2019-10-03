@@ -1,7 +1,12 @@
-## Voxel Visualization Tool
+# space-carving
+A interative space carving algorithm facing articulated objects
+ 
+ ---
+ 
+Files:
 
----
+**space-carving.py**: Main script
 
-This is the cooperating visualization tool for the voxel models. It's based on the **qglviewer** library.
+**silhouette_extract.py**: Include the methods to extract silhouette from rgb images
 
-Use *qmake & make* to build the program.
+**projection.py**: Include the methods to get the camera calibration information
