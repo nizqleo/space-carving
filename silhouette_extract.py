@@ -1,6 +1,6 @@
 import cv2
 
-data_dir = "/home/nizq/Downloads/Datas/bunny_data/silhouettes/"
+data_dir = "/home/nizq/Downloads/Datas/beethoven_data/silhouettes/"
 
 def get_mask(file):
     
