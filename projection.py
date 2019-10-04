@@ -1,7 +1,7 @@
 import cv2
 import numpy as np 
-import scipy as sp
-data_dir = "/home/nizq/Downloads/Datas/beethoven_data/calib/"
+
+data_dir = "/home/nizq/Downloads/Datas/bunny_data/calib/"
 
 def projectionMatrix(file):
     projection_file_name = data_dir + file.split('.')[0] + ".txt"
@@ -14,16 +14,7 @@ def projectionMatrix(file):
             P[i, j] = float(matrix_line.split()[j])
     return P
 
+        
 
-def camera_position(file):
-    P = projectionMatrix(file)
-    print(P)
-    Ps = np.split(P, [3,4], axis = 1)
-    P = Ps[0]
-    b = -Ps[1]
-
-    print(Ps, P, b)
-    X = np.linalg.solve(P,b)
-    print(X)
-    return X
     
+
