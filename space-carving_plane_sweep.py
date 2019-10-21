@@ -164,10 +164,10 @@ if __name__ == "__main__":
     # begin plane_sweep
     carve_cnt = 0
     for i in range(obj.shape[0]):
-        if i != 28:
-            for j in range(obj.shape[1]):
-                for k in range(obj.shape[2]):
-                    obj[i,j,k] = 0
+        # if i != 28:
+        #     for j in range(obj.shape[1]):
+        #         for k in range(obj.shape[2]):
+        #             obj[i,j,k] = 0
 
         last = []
         # form the camera set
@@ -179,19 +179,13 @@ if __name__ == "__main__":
         if len(camera_set) < 1:
             continue
 
-        passed = []
-        j, k = next_generator_i(i, 0, -1)
-        if j == -1 and k == -1:
-            continue
-        while(([j, k] not in passed) and [j,k] != [-1,-1]):
-            if consistency_check(i, j, k, camera_set):
-                passed.append([j, k])
-            else:
-                obj[i,j,k] = 0
-                carve_cnt = carve_cnt+1
-            j,k = next_generator_i(i, j ,k)
-
-
+        for j in range(obj.shape[1]):
+            for k in range(obj.shape[2]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
 
     print("x sweep1  carved:",carve_cnt)
 
