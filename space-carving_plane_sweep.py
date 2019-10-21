@@ -7,7 +7,7 @@ import silhouette_extract
 import projection
 import radiance
 
-data_dir = "/home/nizq/Downloads/Datas/bunny_data/images"
+data_dir = "/home/nizq/Downloads/Datas/beethoven_data/images"
            
 graity = 0.25
 xmin = -10
@@ -63,52 +63,7 @@ def consistency_check(i, j, k, camera_set):
         obj_g[i,j,k] = color[1]
         obj_b[i,j,k] = color[0]
         image_pixel_mark_situ[file][int(pix_cord[1,0]), int(pix_cord[0,0])] = 1
-        return True
-
-last = []
-clock_wise = [[0,-1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]
-
-def next_generator_i(i, j, k):
-    
-    global obj
-    global clock_wise
-    global last
-    if last == []:
-        if obj[i, j, k] != 0:
-            last = [j,k]
-            return next_generator_i(i, j, k)
-        for tj in range(j,obj.shape[1]):
-            for tk in range(obj.shape[2]):
-                if obj[i,tj,tk] != 0:
-                    return tj,tk
-        return -1, -1
-    else:
-        if obj[i, j, k] == 0:
-            temp = last
-            last=[j,k]
-            j = temp[0]
-            k = temp[1]
-            
-        start = [last[0]-j,last[1]-k]
-        if start == [0, 0]:
-            start = [-1, 0]
-        
-        if obj[i, j, k] != 0:
-            last = [j, k]
-            
-        start_idx = clock_wise.index(start)
-        for p in range(start_idx+1, 8):
-            temp_j=j+clock_wise[p][0]
-            temp_k=k+clock_wise[p][1]
-            if obj[i,temp_j,temp_k] != 0:
-                return temp_j,temp_k
-        for p in range(0, start_idx):
-            temp_j=j+clock_wise[p][0]
-            temp_k=k+clock_wise[p][1]
-            if obj[i,temp_j,temp_k] != 0:
-                return temp_j,temp_k
-        return -1,-1
-        
+        return True        
 
 if __name__ == "__main__":
 
@@ -162,14 +117,10 @@ if __name__ == "__main__":
     # end of the visual hull build
     
     # begin plane_sweep
+
+    #########################################_x_ positive_####################################
     carve_cnt = 0
     for i in range(obj.shape[0]):
-        # if i != 28:
-        #     for j in range(obj.shape[1]):
-        #         for k in range(obj.shape[2]):
-        #             obj[i,j,k] = 0
-
-        last = []
         # form the camera set
         threshold = xmin + i*graity
         camera_set = [] 
@@ -186,10 +137,114 @@ if __name__ == "__main__":
                 if not consistency_check(i, j, k, camera_set):
                     obj[i,j,k] = 0
                     carve_cnt = carve_cnt+1
-
     print("x sweep1  carved:",carve_cnt)
 
-    color_file = open("./photo_hull_result1.txt", "w")
+    #########################################_x_negative_####################################
+    carve_cnt = 0
+    for i in range(obj.shape[0]-1, 0, -1):
+        # form the camera set
+        threshold = xmin + i*graity
+        camera_set = [] 
+        for key,values in  camera_position.items():
+            if(values[0] > threshold):
+                camera_set.append(key)
+        if len(camera_set) < 1:
+            continue
+
+        for j in range(obj.shape[1]):
+            for k in range(obj.shape[2]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
+    print("x sweep2  carved:",carve_cnt)
+
+    #########################################_y_ positive_####################################
+    carve_cnt = 0
+    for j in range(obj.shape[0]):
+        # form the camera set
+        threshold = ymin + j*graity
+        camera_set = [] 
+        for key,values in  camera_position.items():
+            if(values[1] < threshold):
+                camera_set.append(key)
+        if len(camera_set) < 1:
+            continue
+
+        for i in range(obj.shape[0]):
+            for k in range(obj.shape[2]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
+    print("y sweep1  carved:",carve_cnt)
+    
+    #########################################_y_ negative_####################################
+    carve_cnt = 0
+    for j in range(obj.shape[1]):
+        # form the camera set
+        threshold = ymin + j*graity
+        camera_set = [] 
+        for key,values in  camera_position.items():
+            if(values[1] > threshold):
+                camera_set.append(key)
+        if len(camera_set) < 1:
+            continue
+
+        for i in range(obj.shape[0]):
+            for k in range(obj.shape[2]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
+    print("y sweep2  carved:",carve_cnt)
+    
+    #########################################_z_ positive_####################################
+    carve_cnt = 0
+    for k in range(obj.shape[2]):
+        # form the camera set
+        threshold = zmin + k*graity
+        camera_set = [] 
+        for key,values in  camera_position.items():
+            if(values[2] < threshold):
+                camera_set.append(key)
+        if len(camera_set) < 1:
+            continue
+
+        for i in range(obj.shape[0]):
+            for j in range(obj.shape[1]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
+    print("z sweep1  carved:",carve_cnt)
+    
+    #########################################_z_negative_####################################
+    carve_cnt = 0
+    for k in range(obj.shape[2]):
+        # form the camera set
+        threshold = zmin + k*graity
+        camera_set = [] 
+        for key,values in  camera_position.items():
+            if(values[2] > threshold):
+                camera_set.append(key)
+        if len(camera_set) < 1:
+            continue
+
+        for j in range(obj.shape[1]):
+            for i in range(obj.shape[0]):
+                if obj[i,j,k] == 0:
+                    continue
+                if not consistency_check(i, j, k, camera_set):
+                    obj[i,j,k] = 0
+                    carve_cnt = carve_cnt+1
+    print("z sweep2  carved:",carve_cnt)
+
+    color_file = open("./beethoven_photo_hull_result.txt", "w")
     head_line = "{} {} {} {} {} {} {} {}\n" # graity, xmin, xmax, ymin, ymax, zmin, zmax, is_colored version
     voxel_elem = "{} "
     voxel_elem_color = "{} {} {} {}\n"

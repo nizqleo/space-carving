@@ -17,13 +17,12 @@ def projectionMatrix(file):
 
 def camera_position(file):
     P = projectionMatrix(file)
-    print(P)
+
     Ps = np.split(P, [3,4], axis = 1)
     P = Ps[0]
     b = -Ps[1]
 
-    print(Ps, P, b)
     X = np.linalg.solve(P,b)
-    print(X)
+
     return X
     

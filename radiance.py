@@ -16,7 +16,7 @@ def consistency(col_set):
     max_distance = np.amax(distance)
     #print(max_distance)
 
-    if math.sqrt(max_distance) > 30:
+    if math.sqrt(max_distance) > 200:
         return [False, col_center]
     else:
         return [True, col_center]
